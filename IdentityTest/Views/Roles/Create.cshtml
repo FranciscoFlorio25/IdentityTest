@@ -1,0 +1,16 @@
+﻿@model IdentityTest.Web.ViewModels.RolesDTO
+@{
+    ViewData["Title"] = "CREATE ROLE";
+}
+
+<h1 class="bg-info text-white">Create a Role</h1>
+<a asp-action="Index" class="btn btn-secondary">Back</a>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="Name">Name:</label>
+        <input name="Name" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
