@@ -29,7 +29,7 @@ namespace IdentityTest.Web.Controllers
         {
             if (string.IsNullOrEmpty(role.Name))
             {
-                return View() ;
+                return View();
             }
             await _userRoles.CreateRole(role.Name);
             return RedirectToAction("Index");
@@ -41,7 +41,7 @@ namespace IdentityTest.Web.Controllers
             var toUpdate = await _userRoles.get(id);
             if (toUpdate != null)
             {
-               return View(toUpdate);
+                return View(toUpdate);
             }
             return RedirectToAction("Index");
         }
@@ -57,8 +57,36 @@ namespace IdentityTest.Web.Controllers
             {
                 return View();
             }
-            await _userRoles.UpdateRole(id,role.Name);
+            await _userRoles.UpdateRole(id, role.Name);
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        
+        public async Task<IActionResult> EditUserRoles(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                return View();
+            }
+
+            var user = await _userRoles.GetUser(id);
+            var role = await _userRoles.CurrentUserRole(id);
+            var roles = await _userRoles.getroleNames();
+            return View(new UserRoleDTO(user.Email, role, roles));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditUserRoles(string userId, string roleId)
+        {
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(roleId))
+            {
+                return View();
+            }
+
+            await _userRoles.AddToRole(userId,roleId);
+            return View();
         }
     }
 }

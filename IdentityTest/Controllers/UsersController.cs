@@ -15,10 +15,12 @@ namespace IdentityTest.Web.Controllers
             _aplicationUserService = aplicationUserService;
         }
 
+
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             var user = await _aplicationUserService.GetAll();
+
             return View(user);
         }
 
@@ -53,7 +55,6 @@ namespace IdentityTest.Web.Controllers
         [AutoValidateAntiforgeryToken]
         public async Task<IActionResult> Register(UserDTO user)
         {
-
             await _aplicationUserService.RegisterUserAsync(user.Password, user.Email);
             return RedirectToAction("Index");
         }
@@ -80,10 +81,7 @@ namespace IdentityTest.Web.Controllers
         public async Task<IActionResult> Update(string id)
         {
             var user = await _aplicationUserService.GetFromId(id);
-            if (user != null)
-                return View(user);
-            else
-                return RedirectToAction("Index");
+            return View(user);
         }
 
         [HttpPost]
@@ -123,8 +121,14 @@ namespace IdentityTest.Web.Controllers
 
                 return View();
             }
+            if(!user.Password.Equals(user.PasswordConfirm))
+            {
+                return View();
+            }
             await _aplicationUserService.UpdatePassword(id, user.Password);
             return RedirectToAction("Index");
         }
+        
+        
     }
 }

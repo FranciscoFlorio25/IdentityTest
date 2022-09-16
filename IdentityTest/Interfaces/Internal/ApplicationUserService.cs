@@ -77,5 +77,7 @@ namespace IdentityTest.Web
             await _userManager.RemovePasswordAsync(user);
             await _userManager.AddPasswordAsync(user,password);
         }
+
+
     }
 }

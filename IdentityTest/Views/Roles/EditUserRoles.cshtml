@@ -1,0 +1,34 @@
+﻿@model IdentityTest.Web.ViewModels.UserRoleDTO
+@{
+	ViewData["Title"] = "UPDATE Role";
+}
+
+<h1 class="bg-info text-white">Assign User</h1>
+<a asp-controller="Users" asp-action="Index" class="btn btn-secondary">Back</a>
+<div asp-validation-summary="All" class="text-danger"></div>
+<div class="container-xxl">
+	<label asp-for="userEmail"> userEmail </label>
+</div>
+<div>
+	<form asp-action="EditUserRoles" method="post">
+		@foreach (string roleNames in Model.rolesToBe)
+		{
+			<div>
+				<select class="form-select" aria-label="Roles">
+					<option selected>Choose a Role</option>
+					<option value="@roleNames">@roleNames</option>
+				</select>
+			</div>
+		}
+		<button type="submit" class="btn btn-primary">Save</button>
+	</form>
+</div>
+<div>
+	<div class="container-xxl">
+		<label asp-for="userRoleName" > userRoleName </label>
+	</div>
+	<form asp-action="EditUserRoles" method="delete">
+		<button type="submit" class="btn btn-sm btn-danger">Remove from role</button>
+	</form>
+</div>
+
