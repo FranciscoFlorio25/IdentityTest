@@ -78,14 +78,16 @@ namespace IdentityTest.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditUserRoles(string userId, string roleId)
+        public async Task<IActionResult> EditUserRoles(string userId, string roleId,
+            UserRoleDTO roleDTO)
         {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(roleId))
+            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(roleId) ||
+                string.IsNullOrEmpty(roleDTO.userRoleName))
             {
                 return View();
             }
 
-            await _userRoles.AddToRole(userId,roleId);
+            await _userRoles.AddToRole(userId,roleId, roleDTO.userRoleName);
             return View();
         }
     }

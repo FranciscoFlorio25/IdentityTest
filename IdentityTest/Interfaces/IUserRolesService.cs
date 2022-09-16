@@ -15,7 +15,7 @@ namespace IdentityTest.Web.Interfaces
         Task UpdateRole(string id, string name);
         Task<ApplicationUser> GetUser(string UserId);
         Task<string> CurrentUserRole(string userId);
-        Task AddToRole(string idUser, string idRole);
+        Task AddToRole(string idUser, string idRole, string userRoleName);
         Task RemoveFromRole(string idUser, string idRole);
         Task<string[]> getroleNames();
     }

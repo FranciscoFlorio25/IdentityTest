@@ -57,9 +57,10 @@ namespace IdentityTest.Web.Interfaces.Internal
             return await _userManager.Users.SingleAsync(x => x.Id.Equals(UserId));
         }
 
-        public async Task AddToRole(string idUser, string idRole)
+        public async Task AddToRole(string idUser, string idRole, string userRoleName)
         {
-            var role = await _roleManager.Roles.SingleAsync(x => x.Id.Equals(idRole));
+            var role = await _roleManager.Roles.SingleAsync(x => x.Id.Equals(idRole)
+            && x.Name.Equals(userRoleName));
             var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(idUser));
             bool isInRole = await _userManager.IsInRoleAsync(user, role.Name);
 
