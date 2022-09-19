@@ -14,7 +14,7 @@ namespace IdentityTest.Web.Interfaces
 
         Task LoginUserAsync(string email, string password);
 
-        Task logOutAsync();
+        Task LogOutAsync();
 
         Task UserDelete(string id);
         Task<ApplicationUser> GetFromId(string id);

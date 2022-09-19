@@ -10,7 +10,7 @@
 	<tr>
 		<th>ID</th>
 		<th>Email</th>
-		<th>Role</th>
+		<th>Roles</th>
 		<th>Update</th>
 		<th>Assign Role</th>
 		<th>Delete</th>
@@ -21,9 +21,7 @@
 		<tr>
 			<td>@user.Id</td>
 			<td>@user.Email</td>
-			<td>
-				role
-			</td>
+			<td>Roles</td>
 			<td>
 				<a class="btn btn-sm btn-primary" asp-action="Update" asp-route-id="@user.Id">
 					Update

@@ -35,14 +35,47 @@ namespace IdentityTest.Web.Interfaces.Internal
             }
            
         }
-        public async Task<IdentityRole> get(string id)
+        public async Task<IdentityRole> Get(string id)
         {
             return await _roleManager.Roles.SingleAsync(x => x.Id.Equals(id));
         }
 
-        public async Task<IEnumerable<IdentityRole>> getAll()
+        public async Task<IEnumerable<IdentityRole>> GetAll()
         {
             return await _roleManager.Roles.ToListAsync();
+        }
+
+
+        private async Task<ApplicationUser> GetUser(string UserId)
+        {
+            return await _userManager.Users.SingleAsync(x => x.Id.Equals(UserId));
+        }
+
+        private async Task<IEnumerable<string>> UserRoles(string userId)
+        {
+            var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(userId));
+            var roles = await _userManager.GetRolesAsync(user);
+
+
+            return roles;
+        }
+
+        public async Task<UserRoleViewModel> GetRoles(string id)
+        {
+            var user = await GetUser(id);
+            var roles = await _roleManager.Roles.ToListAsync();
+            var rolesDTO = new List<RolesDTO>();
+            var currentRoles = await UserRoles(id);
+            foreach (var role in roles)
+            {
+                 rolesDTO.Add(new RolesDTO(role.Id, role.Name));
+            }
+
+            UserRoleViewModel userRolesDto = new();
+            userRolesDto.UserEmail = user.Email;
+            userRolesDto.currentRoles = currentRoles;
+            userRolesDto.RoleList = rolesDTO;
+            return userRolesDto;
         }
         public async Task UpdateRole(string id, string name)
         {
@@ -51,23 +84,15 @@ namespace IdentityTest.Web.Interfaces.Internal
             await _roleManager.UpdateAsync(role);
 
         }
-
-        public async Task<ApplicationUser> GetUser(string UserId)
+        public async Task AddToRole(string idUser, string idRole)
         {
-            return await _userManager.Users.SingleAsync(x => x.Id.Equals(UserId));
-        }
-
-        public async Task AddToRole(string idUser, string idRole, string userRoleName)
-        {
-            var role = await _roleManager.Roles.SingleAsync(x => x.Id.Equals(idRole)
-            && x.Name.Equals(userRoleName));
+            var role = await _roleManager.Roles.SingleAsync(x => x.Id.Equals(idRole));
             var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(idUser));
             bool isInRole = await _userManager.IsInRoleAsync(user, role.Name);
 
             if (!isInRole)
             {
                 await _userManager.AddToRoleAsync(user, role.Name);
-
             }
         }
         public async Task RemoveFromRole(string idUser, string idRole)
@@ -81,24 +106,6 @@ namespace IdentityTest.Web.Interfaces.Internal
                 await _userManager.RemoveFromRoleAsync(user,role.Name);
 
             }
-        }
-
-        public async Task<string> CurrentUserRole(string userId)
-        {
-            var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(userId));
-            var roles = await _userManager.GetRolesAsync(user);
-            var role = roles.FirstOrDefault();
-            if (role == null)
-            {
-                return "No role yet";
-            }
-            return role;
-        }
-
-        public async Task<string[]> getroleNames()
-        {
-            var roles = await getAll();
-            return roles.Select(x => x.Name).ToArray();
         }
     }
 }

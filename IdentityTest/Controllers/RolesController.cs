@@ -1,5 +1,6 @@
 ﻿using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.ViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
@@ -17,7 +18,7 @@ namespace IdentityTest.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var roles = await _userRoles.getAll();
+            var roles = await _userRoles.GetAll();
             return View(roles);
         }
         [HttpGet]
@@ -38,7 +39,7 @@ namespace IdentityTest.Web.Controllers
 
         public async Task<IActionResult> Update(string id)
         {
-            var toUpdate = await _userRoles.get(id);
+            var toUpdate = await _userRoles.Get(id);
             if (toUpdate != null)
             {
                 return View(toUpdate);
@@ -61,34 +62,56 @@ namespace IdentityTest.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        [HttpGet]
-        
+        [HttpPost]
+        public async Task<IActionResult> Delete(string id)
+        {
+            await _userRoles.DeleteRole(id);
+            return View();
+        }
+
+        [HttpGet]     
         public async Task<IActionResult> EditUserRoles(string id)
         {
+
             if (string.IsNullOrEmpty(id))
             {
                 return View();
             }
 
-            var user = await _userRoles.GetUser(id);
-            var role = await _userRoles.CurrentUserRole(id);
-            var roles = await _userRoles.getroleNames();
-            return View(new UserRoleDTO(user.Email, role, roles));
+            var userRole = await _userRoles.GetRoles(id);
+            return View(userRole);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditUserRoles(string userId, string roleId,
-            UserRoleDTO roleDTO)
+        public async Task<IActionResult> EditUserRoles(string id, UserRoleViewModel model)
         {
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(roleId) ||
-                string.IsNullOrEmpty(roleDTO.userRoleName))
+
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(model.RoleId))
             {
-                return View();
+                
+                return View(model);
             }
 
-            await _userRoles.AddToRole(userId,roleId, roleDTO.userRoleName);
-            return View();
+            await _userRoles.AddToRole(id, model.RoleId);
+            var userRole = await _userRoles.GetRoles(id);
+            return View(userRole);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUserRoles(string id, UserRoleViewModel model)
+        {
+            model = await _userRoles.GetRoles(id);
+            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(model.RoleId))
+            {
+                return View(model);
+            }
+
+
+            await _userRoles.RemoveFromRole(id, model.RoleId);
+            
+            return View(model);
         }
     }
 }

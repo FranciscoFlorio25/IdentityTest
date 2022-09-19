@@ -61,7 +61,7 @@ namespace IdentityTest.Web.Controllers
 
         public async Task<IActionResult> LogOut()
         {
-            await _aplicationUserService.logOutAsync();
+            await _aplicationUserService.LogOutAsync();
             return RedirectToAction("Login");
         }
 

@@ -1,4 +1,5 @@
-﻿@model IdentityTest.Web.ViewModels.UserRoleDTO
+﻿@using IdentityTest.Web.ViewModels
+@model IdentityTest.Web.ViewModels.UserRoleViewModel
 @{
 	ViewData["Title"] = "UPDATE Role";
 }
@@ -6,31 +7,37 @@
 <h1 class="bg-info text-white">Assign User</h1>
 <a asp-controller="Users" asp-action="Index" class="btn btn-secondary">Back</a>
 <div asp-validation-summary="All" class="text-danger"></div>
-<div class="container-xxl">
-	<label asp-for="userEmail"> @Model.userEmail </label>
-</div>
+<table class="table table-sm table-bordered table-bordered">
+    <tr><th>Email</th><th>Current Roles</th><th>Delete</th></tr>
+	<tr>
+		<td><label> @Model.UserEmail </label></td>
+		<td>
+			@foreach (var roles in Model.currentRoles)
+			{
+				@roles
+			}
+		</td>
+		<td>
+			<form asp-action="RemoveRole" method="post">
+				<button type="submit" class="btn btn-sm btn-danger">Remove Role</button>
+			</form>
+		</td>
+	</tr>	
+</table>
+
 <div>
 	<form asp-action="EditUserRoles" method="post">
-		@foreach (string roleNames in @Model.rolesToBe)
-		{
-			<div>
-				<select class="form-select" aria-label="Roles">
-					<option selected>Choose a Role</option>
-					<option value="userRoleName">@roleNames</option>
-				</select>
-			</div>
-		}
+		<select asp-for ="RoleId" class="form-select" aria-label="Roles">
+			<option selected>Choose a Role</option>
+			@foreach (RolesDTO roleNames in Model.RoleList)
+			{
+				<option value="@roleNames.Id">@roleNames.Name</option>
+			}
+		</select>
 		<div>
 			<button type="submit" class="btn btn-primary">Save</button>
 		</div>		
 	</form>
 </div>
-<div>
-	<div class="container-xxl">
-		<label asp-for="userRoleName" > @Model.userRoleName </label>
-	</div>
-	<form asp-action="EditUserRoles" method="delete">
-		<button type="submit" class="btn btn-sm btn-danger">Remove from role</button>
-	</form>
-</div>
+
 

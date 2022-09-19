@@ -51,7 +51,7 @@ namespace IdentityTest.Web
                 _logger.LogInformation("User fail to sing in");
             }
         }
-        public async Task logOutAsync()
+        public async Task LogOutAsync()
         {
             await _signInManager.SignOutAsync();
         }
