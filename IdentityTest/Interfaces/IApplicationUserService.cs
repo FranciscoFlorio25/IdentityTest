@@ -1,4 +1,5 @@
 ﻿using IdentityTest.Models;
+using IdentityTest.Web.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace IdentityTest.Web.Interfaces
     public interface IApplicationUserService
     {
         Task<IEnumerable<ApplicationUser>> GetAll();
-        Task RegisterUserAsync(string password, string email);
+        Task RegisterUserAsync(UserDTO user);
 
         Task LoginUserAsync(string email, string password);
 
@@ -18,8 +19,10 @@ namespace IdentityTest.Web.Interfaces
 
         Task UserDelete(string id);
         Task<ApplicationUser> GetFromId(string id);
-        Task UpdateUser(string id, string email);
+        Task UpdateUser(string id, UserUpdateViewModel model);
 
         Task UpdatePassword(string id, string password);
+
+        Task<UserUpdateViewModel> getUserToUpdate(string Id);
     }
 }

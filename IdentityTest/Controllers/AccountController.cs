@@ -1,21 +1,22 @@
 ﻿using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityTest.Web.Controllers
 {
-    public class UsersController : Controller
+    public class AccountController : Controller
     {
         private readonly IApplicationUserService _aplicationUserService;
 
 
-        public UsersController(IApplicationUserService aplicationUserService)
+        public AccountController(IApplicationUserService aplicationUserService)
         {
             _aplicationUserService = aplicationUserService;
         }
 
-
+        [Authorize(Roles ="Admin")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -32,6 +33,7 @@ namespace IdentityTest.Web.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(UserDTO user)
         {
 
@@ -53,9 +55,15 @@ namespace IdentityTest.Web.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Register(UserDTO user)
+        public async Task<IActionResult> Register(UserDTO user,string returnUrl)
         {
-            await _aplicationUserService.RegisterUserAsync(user.Password, user.Email);
+            
+            await _aplicationUserService.RegisterUserAsync(user);
+
+            if (!string.IsNullOrEmpty(returnUrl))
+                {
+                return Redirect(returnUrl);
+            }
             return RedirectToAction("Index");
         }
 
@@ -64,8 +72,7 @@ namespace IdentityTest.Web.Controllers
             await _aplicationUserService.LogOutAsync();
             return RedirectToAction("Login");
         }
-
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id)
@@ -77,28 +84,32 @@ namespace IdentityTest.Web.Controllers
             await _aplicationUserService.UserDelete(id);
             return RedirectToAction("Index");
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Update(string id)
         {
-            var user = await _aplicationUserService.GetFromId(id);
+            var user = await _aplicationUserService.getUserToUpdate(id);
+
+
+
             return View(user);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Update(string id, UserDTO user)
+        public async Task<IActionResult> Update(string id, UserUpdateViewModel user)
         {
-            //quizas validaciones por aca estarian buenas
 
-            if(string.IsNullOrEmpty(id) || string.IsNullOrEmpty(user.Email) 
-                || string.IsNullOrEmpty(user.Password))
+            if(string.IsNullOrEmpty(id) || string.IsNullOrEmpty(user.UserEmail))
             {
                 return View();
             }
-            await _aplicationUserService.UpdateUser(id, user.Email);
+            await _aplicationUserService.UpdateUser(id, user);
             return RedirectToAction("Index");
         }
 
+
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> ChangePassword(string id)
         {
@@ -112,8 +123,7 @@ namespace IdentityTest.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(string id, UserDTO user)
-        {
-            //quizas validaciones por aca estarian buenas
+        { 
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(user.Password) ||
                 string.IsNullOrEmpty(user.PasswordConfirm))
@@ -128,7 +138,11 @@ namespace IdentityTest.Web.Controllers
             await _aplicationUserService.UpdatePassword(id, user.Password);
             return RedirectToAction("Index");
         }
-        
-        
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
     }
 }

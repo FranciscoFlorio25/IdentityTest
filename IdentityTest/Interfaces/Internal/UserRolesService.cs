@@ -51,13 +51,21 @@ namespace IdentityTest.Web.Interfaces.Internal
             return await _userManager.Users.SingleAsync(x => x.Id.Equals(UserId));
         }
 
-        private async Task<IEnumerable<string>> UserRoles(string userId)
+        private async Task<IEnumerable<RolesDTO>> UserRoles(string userId)
         {
             var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(userId));
-            var roles = await _userManager.GetRolesAsync(user);
+            var roles = await _roleManager.Roles.ToListAsync();
+            var rolesDTO = new List<RolesDTO>();
 
+            foreach (var role in roles)
+            {
+                if (await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    rolesDTO.Add(new RolesDTO(role.Id, role.Name));
+                }
+            }
 
-            return roles;
+            return rolesDTO;
         }
 
         public async Task<UserRoleViewModel> GetRoles(string id)
@@ -66,15 +74,18 @@ namespace IdentityTest.Web.Interfaces.Internal
             var roles = await _roleManager.Roles.ToListAsync();
             var rolesDTO = new List<RolesDTO>();
             var currentRoles = await UserRoles(id);
+
             foreach (var role in roles)
             {
                  rolesDTO.Add(new RolesDTO(role.Id, role.Name));
             }
 
             UserRoleViewModel userRolesDto = new();
+            userRolesDto.UserId = user.Id;
             userRolesDto.UserEmail = user.Email;
-            userRolesDto.currentRoles = currentRoles;
+            userRolesDto.CurrentRoles = currentRoles;
             userRolesDto.RoleList = rolesDTO;
+
             return userRolesDto;
         }
         public async Task UpdateRole(string id, string name)
@@ -106,6 +117,20 @@ namespace IdentityTest.Web.Interfaces.Internal
                 await _userManager.RemoveFromRoleAsync(user,role.Name);
 
             }
+        }
+
+        public async Task<ConfirmRemoveUserRole> GetToBeRemove(string idUser, string idRole)
+        {
+            var user = await GetUser(idUser);
+            var role =  await _roleManager.Roles.SingleAsync(x => x.Id.Equals(idRole));
+
+            ConfirmRemoveUserRole UserRoleToRemove = new();
+            UserRoleToRemove.UserEmail = user.Email;
+            UserRoleToRemove.UserId = user.Id;
+            UserRoleToRemove.RoleToRemove = role.Name;
+            UserRoleToRemove.RoleId = role.Id;
+
+            return UserRoleToRemove;
         }
     }
 }

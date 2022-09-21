@@ -1,11 +1,13 @@
 ﻿using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
 namespace IdentityTest.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class RolesController : Controller
     {
         private readonly IUserRolesService _userRoles;
@@ -14,7 +16,6 @@ namespace IdentityTest.Web.Controllers
         {
             _userRoles = userRoles;
         }
-
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -52,7 +53,6 @@ namespace IdentityTest.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(string id, RolesDTO role)
         {
-            //quizas validaciones por aca estarian buenas
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(role.Name))
             {
@@ -66,10 +66,9 @@ namespace IdentityTest.Web.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             await _userRoles.DeleteRole(id);
-            return View();
+            return RedirectToAction("Index");
         }
-
-        [HttpGet]     
+        [HttpGet]
         public async Task<IActionResult> EditUserRoles(string id)
         {
 
@@ -89,7 +88,7 @@ namespace IdentityTest.Web.Controllers
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(model.RoleId))
             {
-                
+
                 return View(model);
             }
 
@@ -97,21 +96,23 @@ namespace IdentityTest.Web.Controllers
             var userRole = await _userRoles.GetRoles(id);
             return View(userRole);
         }
+        [Route("Account/{userId}/Roles/{roleId}")]
+        [HttpGet]
+        public async Task<IActionResult> DeleteUserRoles(string roleId, string userId)
+        {
+            
+            var userRole = await _userRoles.GetToBeRemove(userId,roleId);
+            return View(userRole);
+        }
 
+        [Route("Account/{userId}/Roles/{roleId}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteUserRoles(string id, UserRoleViewModel model)
+        public async Task<IActionResult> DeleteUserRoles(string roleId, string userId,
+            ConfirmRemoveUserRole model)
         {
-            model = await _userRoles.GetRoles(id);
-            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(model.RoleId))
-            {
-                return View(model);
-            }
-
-
-            await _userRoles.RemoveFromRole(id, model.RoleId);
-            
-            return View(model);
+            await _userRoles.RemoveFromRole(userId,roleId);
+            return RedirectToAction("Index","Account");
         }
     }
 }

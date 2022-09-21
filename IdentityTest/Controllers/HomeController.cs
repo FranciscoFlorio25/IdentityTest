@@ -1,5 +1,7 @@
 ﻿using IdentityTest.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Diagnostics;
 
 namespace IdentityTest.Controllers
@@ -13,11 +15,13 @@ namespace IdentityTest.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         public IActionResult Index()
         {
             return View();
         }
 
+        [Authorize]
         public IActionResult Privacy()
         {
             return View();

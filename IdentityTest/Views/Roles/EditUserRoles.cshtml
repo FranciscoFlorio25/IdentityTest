@@ -4,40 +4,59 @@
 	ViewData["Title"] = "UPDATE Role";
 }
 
-<h1 class="bg-info text-white">Assign User</h1>
-<a asp-controller="Users" asp-action="Index" class="btn btn-secondary">Back</a>
+<h1 class="bg-info text-white">Assign User Role</h1>
+<a asp-controller="Account" asp-action="Index" class="btn btn-secondary">Back</a>
 <div asp-validation-summary="All" class="text-danger"></div>
 <table class="table table-sm table-bordered table-bordered">
-    <tr><th>Email</th><th>Current Roles</th><th>Delete</th></tr>
+    <tr><th>Email</th></tr>
 	<tr>
 		<td><label> @Model.UserEmail </label></td>
-		<td>
-			@foreach (var roles in Model.currentRoles)
-			{
-				@roles
-			}
-		</td>
-		<td>
-			<form asp-action="RemoveRole" method="post">
-				<button type="submit" class="btn btn-sm btn-danger">Remove Role</button>
-			</form>
-		</td>
 	</tr>	
 </table>
 
 <div>
 	<form asp-action="EditUserRoles" method="post">
+		<input asp-for="UserId" class="form-control" type="hidden" />
+		<input asp-for="UserEmail" class="form-control" type="hidden"/>
 		<select asp-for ="RoleId" class="form-select" aria-label="Roles">
 			<option selected>Choose a Role</option>
-			@foreach (RolesDTO roleNames in Model.RoleList)
+			@if (Model.RoleList != null && Model.RoleList.Any())
 			{
-				<option value="@roleNames.Id">@roleNames.Name</option>
+				@foreach (RolesDTO roleNames in Model.RoleList)
+				{
+					<option value="@roleNames.Id">@roleNames.Name</option>
+				}
+			}
+			else{
+				<p>Woow, such emply</p>
 			}
 		</select>
 		<div>
 			<button type="submit" class="btn btn-primary">Save</button>
 		</div>		
 	</form>
+</div>
+<div>
+	<h1 class="bg-info text-white">Remove user role</h1>
+	<table class="table table-sm table-bordered table-bordered">
+		<tr><th>Current User Roles</th><th>Remove Role</th></tr>
+		@if(Model.CurrentRoles != null && Model.CurrentRoles.Any()){
+			foreach (var currentRoles in Model.CurrentRoles)
+			{
+				<tr>
+					<td>@currentRoles.Name</td>
+					<td>
+						<a class="btn btn-danger" asp-action="DeleteUserRoles"
+				   asp-route-roleId="@currentRoles.Id" asp-route-userId="@Model.UserId"
+						method="post">
+							Remove
+						</a>
+					</td>
+				</tr>
+			}
+		}
+
+	</table>
 </div>
 
 

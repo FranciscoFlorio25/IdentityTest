@@ -16,5 +16,6 @@ namespace IdentityTest.Web.Interfaces
         Task AddToRole(string idUser, string idRole);
         Task RemoveFromRole(string idUser, string idRole);
         Task<UserRoleViewModel> GetRoles(string id);
+        Task<ConfirmRemoveUserRole> GetToBeRemove(string idUser,string idRole);
     }
 }

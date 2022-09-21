@@ -5,6 +5,7 @@ using IdentityTest.Models;
 using IdentityTest.Web;
 using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.Interfaces.Internal;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IApplicationUserService,ApplicationUserService>();
 builder.Services.AddScoped<IUserRolesService,UserRolesService>();
+builder.Services.AddScoped<IClaimsService, ClaimsService>();
 
 builder.Services.AddDbContext<CiscoShopContext>(o =>
 o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
@@ -20,6 +22,11 @@ o.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<CiscoShopContext>().AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(opts =>
+{
+    opts.AccessDeniedPath = "/Account/AccessDenied";
+});
 
 var app = builder.Build();
 
