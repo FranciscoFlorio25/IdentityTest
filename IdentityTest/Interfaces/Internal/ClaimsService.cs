@@ -22,40 +22,24 @@ namespace IdentityTest.Web.Interfaces.Internal
             await _userManager.AddClaimAsync(user, claim);
         }
 
-        public async Task DeleteClaim(string userId, string claimValues)
+        public async Task DeleteClaim(string userId, string claimType)
         {
             ApplicationUser user = await _userManager.Users.SingleAsync(x => x.Id.Equals(userId));
             var claims = await _userManager.GetClaimsAsync(user);
 
-            string[] claimValuesArray = claimValues.Split(";");
-
-            string claimType = claimValuesArray[0],
-                claimValue = claimValuesArray[1],
-                claimIssuer = claimValuesArray[2];
-
-            Claim claim = claims.First(x =>
-            x.Type == claimType && x.Value == claimValue && x.Issuer == claimIssuer);
+            Claim claim = claims.First(x =>x.Type == claimType);
 
             await _userManager.RemoveClaimAsync(user, claim);
         }
 
-        public async Task<ClaimDeleteConfirmation> GetToBeDeleted(string userId, string claimValues)
+        public async Task<ClaimDeleteConfirmation> GetToBeDeleted(string userId, string claimType)
         {
             ClaimDeleteConfirmation ToBeRemove = new();
             ApplicationUser user = await _userManager.Users.SingleAsync(x => x.Id.Equals(userId));
 
-
-            string[] claimValuesArray = claimValues.Split(";");
-
-            string claimType = claimValuesArray[0],
-                claimValue = claimValuesArray[1];
-
-
             ToBeRemove.UserEmail = user.Email;
             ToBeRemove.UserId = user.Id;
-            ToBeRemove.ClaimValues = claimValues;
             ToBeRemove.ClaimType = claimType;
-            ToBeRemove.ClaimValue = claimValue;
 
 
             return ToBeRemove;
