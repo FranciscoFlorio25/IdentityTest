@@ -1,10 +1,10 @@
-﻿@model IEnumerable<System.Security.Claims.Claim>
+﻿@model IdentityTest.Web.ViewModels.UserClaimViewModel;
 @{
     ViewData["Title"] = "CLAIMS";
 }
 
 <h2 class="bg-primary m-1 p-1 text-white">Claims</h2>
-<a asp-action="Create" class="btn btn-secondary">Create a Claim</a>
+<a asp-action="Create" asp-route-Id="@Model.UserId" class="btn btn-secondary">Create a Claim</a>
 
 <table class="table table-sm table-bordered">
     <tr>
@@ -14,28 +14,26 @@
         <th>Value</th>
         <th>Delete</th>
     </tr>
-
-    @foreach (var claim in Model.OrderBy(x => x.Type))
-    {
-        <tr>
-            <td>@if(@claim.Subject!=null){
-                    @claim.Subject.Name
-                }
-                else{
-                    <p>No Subject</p>
-                }
-            </td>
-            <td>@claim.Issuer</td>
-            <td>@claim.Type</td>
-            <td>@claim.Value</td>
-            <td>
-                <form asp-action="Delete" method="post">
-                    <input type="hidden" name="claimValues" value="@claim.Type;@claim.Value;@claim.Issuer" />
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        Delete
-                    </button>
-                </form>
-            </td>
-        </tr>
+    @if(Model.Claims != null){
+        @foreach (var claim in Model.Claims.OrderBy(x => x.ClaimType))
+        {
+            <tr>
+                <td>@claim.ClaimSubject</td>
+                <td>@claim.ClaimIssuer</td>
+                <td>@claim.ClaimType</td>
+                <td>@claim.ClaimValue</td>
+                <td>
+                    <a asp-action="Delete" asp-route-Id="@Model.UserId" class="btn btn-danger">
+                        <input type="hidden" name="claimValues" value="@claim.ClaimType;@claim.ClaimValue;@claim.ClaimIssuer" />
+                        Remove
+                    </a>
+                </td>
+            </tr>
+        }               
     }
+    else
+    {
+        <p>Oh, Wooow, such empty, you should add more infor!</p>
+    }
+
 </table>

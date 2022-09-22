@@ -1,11 +1,18 @@
 ﻿using IdentityTest.Models;
+using IdentityTest.Web.ViewModels;
 using System.Security.Claims;
 
 namespace IdentityTest.Web.Interfaces
 {
     public interface IClaimsService
     {
-        Task AddClaim(ClaimsPrincipal User, string claimType, string claimValue);
-        Task DeleteClaim(ClaimsPrincipal User, string claimValues);
+        Task AddClaim(string userId, string claimType, string claimValue);
+        Task DeleteClaim(string userId, string claimValues);
+
+        Task<UserClaimViewModel> GetUserClaim(string userId);
+
+        Task<CreateClaimViewModel> CreateClaim(string userId);
+
+        Task<ClaimDeleteConfirmation> GetToBeDeleted(string userId, string claimValues);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using IdentityTest.Models;
 using IdentityTest.Web.Interfaces;
+using IdentityTest.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security;
 
 namespace IdentityTest.Web.Controllers
 {
@@ -15,44 +17,51 @@ namespace IdentityTest.Web.Controllers
             _claimsService = claimsService;
         }
 
-        
+
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string Id)
         {
-            return View(User?.Claims);
+            var user = await _claimsService.GetUserClaim(Id);
+            return View(user);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create(string Id)
         {
-
-            return View();
+            var create = await _claimsService.CreateClaim(Id);
+            return View(create);
         }
 
         [HttpPost]
 
-        public async Task<IActionResult> Create(string claimType, string claimValue)
+        public async Task<IActionResult> Create(string Id, CreateClaimViewModel model)
+        {
+
+            if (string.IsNullOrEmpty(model.ClaimType) || string.IsNullOrEmpty(model.ClaimValue))
+            {
+                return RedirectToAction("Index");
+            }
+
+            await _claimsService.AddClaim(Id, model.ClaimType, model.ClaimValue);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(string Id,string claimValues)
         {
             
-            if (string.IsNullOrEmpty(claimType) || string.IsNullOrEmpty(claimValue))
-            {
-                return RedirectToAction("Index");
-            }
-
-            await _claimsService.AddClaim(HttpContext.User, claimType,claimValue);
-            return View();
+            return View(await _claimsService.GetToBeDeleted(Id, claimValues));
         }
 
         [HttpPost]
-
-        public async Task<IActionResult> Delete(string claimValues)
+        public async Task<IActionResult> Delete(string Id, ClaimDeleteConfirmation model)
         {
-            if (string.IsNullOrEmpty(claimValues))
+            if (string.IsNullOrEmpty(model.ClaimValue))
             {
                 return RedirectToAction("Index");
             }
-            await _claimsService.DeleteClaim(HttpContext.User, claimValues);
-            return View();
+            await _claimsService.DeleteClaim(Id, model.ClaimValues);
+            return RedirectToAction("Index");
         }
 
     }
