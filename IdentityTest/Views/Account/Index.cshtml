@@ -10,52 +10,18 @@
 	<tr>
 		<th>ID</th>
 		<th>Email</th>
-		<th>Roles</th>
-		<th>Update</th>
-		<th>Claims</th>
-		<th>Assign Role</th>
-		<th>Delete</th>
-		
+		<th>See User Info</th>
 	</tr>
 	@foreach (ApplicationUser user in Model)
 	{
 		<tr>
 			<td>@user.Id</td>
 			<td>@user.Email</td>
-			<td>Roles</td>
 			<td>
-				<a class="btn btn-sm btn-primary" asp-action="Update" asp-route-id="@user.Id">
-					Update
+				<a class="btn btn-sm btn-primary" asp-action="UserIndex" asp-route-id="@user.Id">
+					See info
 				</a>
 			</td>
-			<td>
-				<a class="btn btn-sm btn-primary" asp-controller="Claim" asp-action="Index" asp-route-id="@user.Id">
-					Claims
-				</a>
-			</td>
-			<td>
-				<a class="btn btn-sm btn-primary" asp-controller="Roles" asp-action="EditUserRoles"
-				asp-route-id="@user.Id">
-					Assign Role
-				</a>
-			</td>
-			<td>
-				@if(User.Identity != null && User.Identity.Name != user.UserName){
-					<form asp-action="Delete" asp-route-id="@user.Id" method="post">
-						<button type="submit" class="btn btn-sm btn-danger">
-							Delete
-						</button>
-					</form>
-				}
-				else if (User.Identity != null && User.Identity.Name == user.UserName)
-				{
-					<form>
-						<button type="submit" class="btn btn-sm btn-danger" disabled>
-							Delete
-						</button>
-					</form>
-				}
-            </td>
 		</tr>
 	}
 </table>

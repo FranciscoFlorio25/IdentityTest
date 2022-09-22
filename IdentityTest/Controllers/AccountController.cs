@@ -25,6 +25,15 @@ namespace IdentityTest.Web.Controllers
             return View(user);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> UserIndex(string id)
+        {
+            var user = await _aplicationUserService.GetFromId(id);
+
+            return View(user);
+        }
+
         [HttpGet]
         public IActionResult Login()
         {
@@ -113,7 +122,7 @@ namespace IdentityTest.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ChangePassword(string id)
         {
-            var user = await _aplicationUserService.GetFromId(id);
+            var user = await _aplicationUserService.GetChangePassword(id);
             if (user != null)
                 return View(user);
             else
@@ -122,16 +131,16 @@ namespace IdentityTest.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(string id, UserDTO user)
+        public async Task<IActionResult> ChangePassword(string id, ChangePasswordViewModel user)
         { 
 
             if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(user.Password) ||
-                string.IsNullOrEmpty(user.PasswordConfirm))
+                string.IsNullOrEmpty(user.ConfirmPassword))
             {
 
                 return View();
             }
-            if(!user.Password.Equals(user.PasswordConfirm))
+            if(!user.Password.Equals(user.ConfirmPassword))
             {
                 return View();
             }

@@ -1,0 +1,102 @@
+﻿@model IdentityTest.Web.ViewModels.UserIndexViewModel
+@{
+	ViewData["Title"] = "User Index";
+}
+<h1 class="bg-info text-white">User index of @Model.UserEmail</h1>
+<a asp-action="Index" class="btn btn-secondary">Back</a>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<div class="UserDataContainer">
+	<table class="table table-sm table-bordered">
+		<tr>
+			<th>Email</th>
+			<th>PhoneNumber</th>
+			<th>FirstName</th>
+			<th>LastName</th>
+			<th>Address</th>
+			<th>Update</th>
+
+		</tr>
+		<tr>
+			<td>
+				@Model.UserEmail
+			</td>
+			<td>
+				@Model.UserPhoneNumber
+			</td>
+			<td>
+				@Model.UserFirstName
+			</td>
+			<td>
+				@Model.UserLastName
+			</td>
+			<td>
+				@Model.UserAddress
+			</td>
+			<td>
+				<a class="btn btn-sm btn-primary" asp-action="Update" asp-route-id="@Model.UserId">
+					Update User Info
+				</a>
+			</td>
+		</tr>
+
+	</table>
+</div>
+<div>
+	<p>Roles for this user</p>
+	@if (Model.UserRoles != null)
+	{
+		<table class="table table-sm table-bordered">
+			<tr>
+				<th>Role Name</th>
+			</tr>
+			@foreach (string role in Model.UserRoles)
+			{
+				<tr>
+					<td>@role</td>
+				</tr>
+			}
+		</table>
+		<div>
+			<p>Assing a role to this user</p>
+		</div>
+		<a class="btn btn-sm btn-primary" asp-controller="Roles" asp-action="EditUserRoles"
+	   asp-route-id="@Model.UserId">
+			Assign Role
+		</a>
+	}
+	else
+	{
+		<p>No roles yet, asing some!</p>
+		<a class="btn btn-sm btn-primary" asp-controller="Roles" asp-action="EditUserRoles"
+	   asp-route-id="@Model.UserId">
+			Assign Role
+		</a>
+	}
+</div>
+<div>
+	<p>Change user password</p>
+	<div>
+		<a class="btn btn-sm btn-primary" asp-action="ChangePassword" asp-route-id="@Model.UserId">
+			Change
+		</a>
+	</div>
+</div>
+<div>
+	<p>Wanna see some claims?</p>
+	<a class="btn btn-sm btn-primary" asp-controller="Claim" asp-action="Index" asp-route-id="@Model.UserId">
+		Claims
+	</a>
+</div>
+
+<div>
+	
+	@if (User.Identity != null && User.Identity.Name != @Model.UserEmail)
+	{
+		<p>You don't want him/she/it here anymore?'</p>
+		<a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.UserId" method="post">
+			Delete User
+		</a>
+	}
+</div>
+

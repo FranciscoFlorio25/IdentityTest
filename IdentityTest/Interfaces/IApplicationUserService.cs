@@ -18,11 +18,12 @@ namespace IdentityTest.Web.Interfaces
         Task LogOutAsync();
 
         Task UserDelete(string id);
-        Task<ApplicationUser> GetFromId(string id);
+        Task<UserIndexViewModel> GetFromId(string id);
         Task UpdateUser(string id, UserUpdateViewModel model);
 
         Task UpdatePassword(string id, string password);
 
         Task<UserUpdateViewModel> getUserToUpdate(string Id);
+        Task<ChangePasswordViewModel> GetChangePassword(string Id);
     }
 }

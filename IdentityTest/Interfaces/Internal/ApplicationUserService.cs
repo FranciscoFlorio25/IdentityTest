@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using IdentityTest.Web.ViewModels;
 using System.Security.AccessControl;
 using System.Security.Claims;
+using NuGet.Protocol.Core.Types;
 
 namespace IdentityTest.Web
 {
@@ -30,9 +31,50 @@ namespace IdentityTest.Web
             return await _userManager.Users.ToListAsync();
 
         }
-        public async Task<ApplicationUser> GetFromId(string id)
+        public async Task<UserIndexViewModel> GetFromId(string id)
         {
-            return await _userManager.Users.SingleAsync(x => x.Id.Equals(id)); 
+            UserIndexViewModel model = new();
+            var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(id));
+
+            model.UserId = user.Id;
+            model.UserEmail = user.Email;
+            model.UserPhoneNumber = user.PhoneNumber;
+
+
+            var claims = await _userManager.GetClaimsAsync(user);
+
+            
+            var FirstName = claims.FirstOrDefault(x => x.Type.Equals("FirstName"));
+            if (FirstName == null)
+            {
+                model.UserFirstName = "Add the FirstName!";
+            }
+            else
+            {
+                model.UserFirstName = FirstName.Value;
+            }
+            var LastName = claims.FirstOrDefault(x => x.Type.Equals("LastName"));
+            if (LastName == null)
+            {
+                model.UserLastName = "Add the LastName!";
+            }
+            else
+            {
+                model.UserLastName = LastName.Value;
+            }
+            var Address = claims.FirstOrDefault(x => x.Type.Equals("Address"));
+            if (Address == null)
+            {
+                model.UserAddress = "Add the Addres!";
+            }
+            else
+            {
+                model.UserAddress = Address.Value;
+            }
+           
+            model.UserRoles = await _userManager.GetRolesAsync(user);
+
+            return model;
         }
 
         private IEnumerable<Claim> UserPersonalInfo(string firstName,string lastName, string address)
@@ -141,6 +183,7 @@ namespace IdentityTest.Web
             var Address = claims.Single(x => x.Type.Equals("Address"));
 
             UserUpdateViewModel toUpdate = new();
+
             toUpdate.UserId = Id;
             toUpdate.UserEmail = user.Email;
             toUpdate.UserFirstName = FirstName.Value;
@@ -149,6 +192,15 @@ namespace IdentityTest.Web
             toUpdate.UserPhoneNumber = user.PhoneNumber;
 
             return toUpdate;
+        }
+
+        public async Task<ChangePasswordViewModel> GetChangePassword(string Id)
+        {
+            var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(Id));
+            ChangePasswordViewModel newPassword =  new();
+            newPassword.UserId = user.Id;
+
+            return newPassword;
         }
     }
 }
