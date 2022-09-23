@@ -44,12 +44,12 @@ namespace IdentityTest.Web.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> Login(UserDTO user)
+        public async Task<IActionResult> Login(UserViewModel user)
         {
 
-
-            if (string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.Password))
+            if (!string.IsNullOrWhiteSpace(await _aplicationUserService.LoginUserAsync(user.Email, user.Password)))
             {
+                ViewBag.ErrorMessage = await _aplicationUserService.LoginUserAsync(user.Email, user.Password);
                 return View();
             }
             await _aplicationUserService.LoginUserAsync(user.Email, user.Password);
@@ -65,9 +65,36 @@ namespace IdentityTest.Web.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Register(UserDTO user,string returnUrl)
+        public async Task<IActionResult> Register(UserViewModel user,string returnUrl)
         {
-            
+            string errorMessage = "";
+
+            if (user.Email == null)
+            {
+                errorMessage= "Email should not be null";
+            }
+            if(user.PhoneNumber== null)
+            {
+                errorMessage = "PhoneNumber should not be null";
+            }
+
+            if (user.Password == null)
+            {
+                errorMessage = "Password should not be null";
+            }
+
+            if (user.Password == null)
+            {
+                errorMessage = "Password should not be null";
+
+            }
+
+            if (!string.IsNullOrWhiteSpace(errorMessage))
+            {
+                ViewBag.ErrorMessage = errorMessage;
+                return View();
+            }
+
             await _aplicationUserService.RegisterUserAsync(user);
 
             if (!string.IsNullOrEmpty(returnUrl))
@@ -96,20 +123,15 @@ namespace IdentityTest.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(string id, ConfirmAccountDelete model)
         {
-            if (string.IsNullOrEmpty(id))
-            {
-                return View();
-            }
             await _aplicationUserService.UserDelete(id);
             return RedirectToAction("Index");
         }
+
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Update(string id)
         {
             var user = await _aplicationUserService.getUserToUpdate(id);
-
-
 
             return View(user);
         }
@@ -118,6 +140,21 @@ namespace IdentityTest.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(string id, UserUpdateViewModel user)
         {
+            string errorMessage = "";
+            if (user.UserEmail == null)
+            {
+                errorMessage = "Email should not be null";
+            }
+            if (user.UserPhoneNumber == null)
+            {
+                errorMessage = "PhoneNumber should not be null";
+            }
+            if (!string.IsNullOrWhiteSpace(errorMessage))
+            {
+                ViewBag.ErrorMessage = errorMessage;
+                user = await _aplicationUserService.getUserToUpdate(id);
+                return View(user);
+            }
             await _aplicationUserService.UpdateUser(id, user);
             return RedirectToAction("Index");
         }
@@ -134,14 +171,40 @@ namespace IdentityTest.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(string id, ChangePasswordViewModel user)
-        { 
-            if(!user.Password.Equals(user.ConfirmPassword))
+        {
+
+            string errorMessage = "";
+
+            if (user.Password==null)
             {
-                return View();
+                errorMessage = "Password must be filled";
             }
-            await _aplicationUserService.UpdatePassword(id, user.Password);
-            return RedirectToAction("Index");
+
+            if(user.ConfirmPassword == null)
+            {
+                errorMessage = "You must confirm the password";
+            }
+
+            if (!string.IsNullOrWhiteSpace(user.Password) && !user.Password.Equals(user.ConfirmPassword))
+            {
+                errorMessage = "Password must match";
+            }
+
+            if (!string.IsNullOrWhiteSpace(errorMessage))
+            {
+                ViewBag.ErrorMessage = errorMessage;
+                user = await _aplicationUserService.GetChangePassword(id);
+                return View(user);
+            }
+
+            if (!string.IsNullOrWhiteSpace(user.Password))
+            {
+                await _aplicationUserService.UpdatePassword(id, user.Password);
+                return RedirectToAction("Index");
+            }
+            return View();
         }
+    
         [HttpGet]
         public IActionResult AccessDenied()
         {

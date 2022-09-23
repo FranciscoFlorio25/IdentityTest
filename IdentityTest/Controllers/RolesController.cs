@@ -31,6 +31,7 @@ namespace IdentityTest.Web.Controllers
         {
             if (string.IsNullOrEmpty(role.Name))
             {
+                ViewBag.ErrorMessage = "Name must be filled";
                 return View();
             }
             await _userRoles.CreateRole(role.Name);
@@ -53,10 +54,11 @@ namespace IdentityTest.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(string id, RolesDTO role)
         {
-
-            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(role.Name))
+            if (string.IsNullOrEmpty(role.Name))
             {
-                return View();
+                ViewBag.ErrorMessage = "Name must be filled";
+                var toUpdate = await _userRoles.Get(id);
+                return View(toUpdate);
             }
             await _userRoles.UpdateRole(id, role.Name);
             return RedirectToAction("Index");
@@ -74,7 +76,8 @@ namespace IdentityTest.Web.Controllers
 
             if (string.IsNullOrEmpty(id))
             {
-                return View();
+               
+                return View(await _userRoles.GetRoles(id));
             }
 
             var userRole = await _userRoles.GetRoles(id);

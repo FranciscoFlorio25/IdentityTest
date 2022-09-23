@@ -96,7 +96,6 @@ namespace IdentityTest.Web.Interfaces.Internal
 
         public async Task<CreateClaimViewModel> CreateClaim(string userId)
         {
-            var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(userId));
             var create = new CreateClaimViewModel();
             create.UserId = userId;
             return create;

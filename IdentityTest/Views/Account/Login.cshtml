@@ -1,11 +1,14 @@
-﻿@model IdentityTest.Web.ViewModels.UserDTO;
+﻿@model IdentityTest.Web.ViewModels.UserViewModel;
 @{
     ViewData["Title"] = "Login";
 }
 
 <h1 class="bg-info text-white">Login</h1>
-<div class="text-danger" asp-validation-summary="All"></div>
-  
+
+<div class="alert alert-danger">
+    <p>@ViewBag.ErrorMessage</p>
+</div>
+
 <form asp-action="Login" method="post">
     <div class="form-group">
         <label asp-for="Email"></label>

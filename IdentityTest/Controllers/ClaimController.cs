@@ -34,12 +34,25 @@ namespace IdentityTest.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(string Id, CreateClaimViewModel model)
         {
+            string errorMessage = "";
 
-            if (string.IsNullOrEmpty(model.ClaimType) || string.IsNullOrEmpty(model.ClaimValue))
+
+            if (string.IsNullOrEmpty(model.ClaimType))
             {
-                return RedirectToAction("Index","Account");
+                errorMessage = "Claim type must be filled";
             }
 
+            if (string.IsNullOrEmpty(model.ClaimValue))
+            {
+                errorMessage = "Claim value must be filled";
+            }
+
+            if (!string.IsNullOrWhiteSpace(errorMessage))
+            {
+                ViewBag.ErrorMessage = errorMessage;
+                var create = await _claimsService.CreateClaim(Id);
+                return View(create);
+            }
             await _claimsService.AddClaim(Id, model.ClaimType, model.ClaimValue);
             return RedirectToAction("Index");
         }

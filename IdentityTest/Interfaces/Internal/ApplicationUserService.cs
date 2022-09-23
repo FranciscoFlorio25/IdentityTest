@@ -12,6 +12,7 @@ using System.Security.Claims;
 using NuGet.Protocol.Core.Types;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.VisualBasic;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace IdentityTest.Web
 {
@@ -90,9 +91,10 @@ namespace IdentityTest.Web
             return claims;
         }
 
-        public async Task RegisterUserAsync(UserDTO user)
+        public async Task RegisterUserAsync(UserViewModel user)
         {
-            ApplicationUser newUser = new() {
+            ApplicationUser newUser = new()
+            {
                 Email = user.Email,
                 EmailConfirmed = true,
                 UserName = user.Email,
@@ -107,13 +109,16 @@ namespace IdentityTest.Web
                 await _userManager.CreateAsync(newUser, user.Password);
                 await _userManager.AddClaimsAsync(newUser, claim);
             }
-            
-            
-
+           
         }
-        public async Task LoginUserAsync(string email, string password)
-        {     
-            var result = await _signInManager.PasswordSignInAsync(email,password,false,false);
+        public async Task<string> LoginUserAsync(string email, string password)
+        {
+
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
+            {
+                return "The password and the email must be filled";
+            }
+            var result = await _signInManager.PasswordSignInAsync(email, password, false, false);
             if (result.Succeeded)
             {
                 _logger.LogInformation("User Logged in");
@@ -121,7 +126,11 @@ namespace IdentityTest.Web
             if (result.IsNotAllowed)
             {
                 _logger.LogInformation("User fail to sing in");
+                return "Password or Email are not valid, check your credentials";
             }
+
+
+            return "";
         }
         public async Task LogOutAsync()
         {

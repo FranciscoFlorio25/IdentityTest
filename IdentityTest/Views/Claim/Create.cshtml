@@ -5,7 +5,10 @@
 
 <h1 class="bg-info text-white">Create Claim</h1>
 <a asp-action="Index" asp-route-id="@Model.UserId" class="btn btn-secondary">Back</a>
-<div asp-validation-summary="All" class="text-danger"></div>
+
+<div class="alert alert-danger">
+    <p>@ViewBag.ErrorMessage</p>
+</div>
 
 <form method="post">
     <div class="form-group">

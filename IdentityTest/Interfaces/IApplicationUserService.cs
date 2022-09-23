@@ -11,9 +11,9 @@ namespace IdentityTest.Web.Interfaces
     public interface IApplicationUserService
     {
         Task<IEnumerable<ApplicationUser>> GetAll();
-        Task RegisterUserAsync(UserDTO user);
+        Task RegisterUserAsync(UserViewModel user);
 
-        Task LoginUserAsync(string email, string password);
+        Task<string> LoginUserAsync(string email, string password);
 
         Task LogOutAsync();
 
