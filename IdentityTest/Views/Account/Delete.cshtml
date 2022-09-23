@@ -1,0 +1,23 @@
+﻿@model IdentityTest.Web.ViewModels.ConfirmAccountDelete;
+<h1 class="bg-info text-white">Remove user role</h1>
+
+@{
+    ViewData["Title"] = "Confirm Remove User";
+}
+
+
+<h1 class="bg-info text-white">Confirm remove</h1>
+<a asp-action="UserIndex" asp-route-id="@Model.UserId" class="btn btn-secondary">Back</a>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="Delete" method="post">
+
+    <div class="form-group">
+        <label asp-for="UserId"> User Email  @Model.UserId</label>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email"> user to Remove @Model.Email</label>
+    </div>
+    <button type="submit" class="btn btn-danger">Confirm Remove</button>
+</form>

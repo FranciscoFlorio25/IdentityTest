@@ -26,6 +26,7 @@ namespace IdentityTest.Web.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        [Route("/Account/UserIndex/{id}")]
         [HttpGet]
         public async Task<IActionResult> UserIndex(string id)
         {
@@ -81,10 +82,19 @@ namespace IdentityTest.Web.Controllers
             await _aplicationUserService.LogOutAsync();
             return RedirectToAction("Login");
         }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> Delete(string id)
+        {
+            return View(await _aplicationUserService.ToBeDeleted(id));
+        }
+
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(string id, ConfirmAccountDelete model)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -108,11 +118,6 @@ namespace IdentityTest.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(string id, UserUpdateViewModel user)
         {
-
-            if(string.IsNullOrEmpty(id) || string.IsNullOrEmpty(user.UserEmail))
-            {
-                return View();
-            }
             await _aplicationUserService.UpdateUser(id, user);
             return RedirectToAction("Index");
         }
@@ -123,23 +128,13 @@ namespace IdentityTest.Web.Controllers
         public async Task<IActionResult> ChangePassword(string id)
         {
             var user = await _aplicationUserService.GetChangePassword(id);
-            if (user != null)
-                return View(user);
-            else
-                return RedirectToAction("Index");
+            return View(user);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(string id, ChangePasswordViewModel user)
         { 
-
-            if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(user.Password) ||
-                string.IsNullOrEmpty(user.ConfirmPassword))
-            {
-
-                return View();
-            }
             if(!user.Password.Equals(user.ConfirmPassword))
             {
                 return View();

@@ -18,6 +18,7 @@ namespace IdentityTest.Web.Interfaces
         Task LogOutAsync();
 
         Task UserDelete(string id);
+        Task<ConfirmAccountDelete> ToBeDeleted(string id);
         Task<UserIndexViewModel> GetFromId(string id);
         Task UpdateUser(string id, UserUpdateViewModel model);
 
