@@ -1,11 +1,10 @@
-using IdetityTest.Web.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using IdentityTest.Models;
 using IdentityTest.Web;
 using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.Interfaces.Internal;
-using Microsoft.AspNetCore.Authentication.Cookies;
+using IdetityTest.Web.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IClaimRolesService, RoleClaimService>();
-builder.Services.AddScoped<IApplicationUserService,ApplicationUserService>();
-builder.Services.AddScoped<IUserRolesService,UserRolesService>();
+builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
+builder.Services.AddScoped<IUserRolesService, UserRolesService>();
 builder.Services.AddScoped<IClaimsService, ClaimsService>();
 
 builder.Services.AddDbContext<CiscoShopContext>(o =>

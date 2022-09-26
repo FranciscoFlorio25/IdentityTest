@@ -1,9 +1,7 @@
 ﻿using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace IdentityTest.Web.Controllers
 {
@@ -82,7 +80,7 @@ namespace IdentityTest.Web.Controllers
 
             if (string.IsNullOrEmpty(id))
             {
-               
+
                 return View(await _userRoles.GetRoles(id));
             }
 
@@ -109,8 +107,8 @@ namespace IdentityTest.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> DeleteUserRoles(string roleId, string userId)
         {
-            
-            var userRole = await _userRoles.GetToBeRemove(userId,roleId);
+
+            var userRole = await _userRoles.GetToBeRemove(userId, roleId);
             return View(userRole);
         }
 
@@ -120,8 +118,8 @@ namespace IdentityTest.Web.Controllers
         public async Task<IActionResult> DeleteUserRoles(string roleId, string userId,
             ConfirmRemoveUserRole model)
         {
-            await _userRoles.RemoveFromRole(userId,roleId);
-            return RedirectToAction("Index","Account");
+            await _userRoles.RemoveFromRole(userId, roleId);
+            return RedirectToAction("Index", "Account");
         }
     }
 }

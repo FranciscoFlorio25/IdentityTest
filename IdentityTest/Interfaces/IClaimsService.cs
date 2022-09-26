@@ -1,6 +1,4 @@
-﻿using IdentityTest.Models;
-using IdentityTest.Web.ViewModels;
-using System.Security.Claims;
+﻿using IdentityTest.Web.ViewModels;
 
 namespace IdentityTest.Web.Interfaces
 {

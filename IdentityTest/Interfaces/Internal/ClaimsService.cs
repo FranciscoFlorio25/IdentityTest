@@ -27,7 +27,7 @@ namespace IdentityTest.Web.Interfaces.Internal
             ApplicationUser user = await _userManager.Users.SingleAsync(x => x.Id.Equals(userId));
             var claims = await _userManager.GetClaimsAsync(user);
 
-            Claim claim = claims.First(x =>x.Type == claimType);
+            Claim claim = claims.First(x => x.Type == claimType);
 
             await _userManager.RemoveClaimAsync(user, claim);
         }
@@ -50,10 +50,10 @@ namespace IdentityTest.Web.Interfaces.Internal
             var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(userId));
 
             var claimList = new List<ClaimDTO>();
-            var claims =await _userManager.GetClaimsAsync(user);
+            var claims = await _userManager.GetClaimsAsync(user);
             string subject;
 
-            foreach(Claim claim in claims)
+            foreach (Claim claim in claims)
             {
                 if (claim.Subject != null)
                 {

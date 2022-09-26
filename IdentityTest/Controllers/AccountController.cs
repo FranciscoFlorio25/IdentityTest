@@ -1,7 +1,6 @@
 ﻿using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IdentityTest.Web.Controllers
@@ -16,7 +15,7 @@ namespace IdentityTest.Web.Controllers
             _aplicationUserService = aplicationUserService;
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -65,15 +64,15 @@ namespace IdentityTest.Web.Controllers
 
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> Register(UserViewModel user,string returnUrl)
+        public async Task<IActionResult> Register(UserViewModel user, string returnUrl)
         {
             string errorMessage = "";
 
             if (user.Email == null)
             {
-                errorMessage= "Email should not be null";
+                errorMessage = "Email should not be null";
             }
-            if(user.PhoneNumber== null)
+            if (user.PhoneNumber == null)
             {
                 errorMessage = "PhoneNumber should not be null";
             }
@@ -98,7 +97,7 @@ namespace IdentityTest.Web.Controllers
             await _aplicationUserService.RegisterUserAsync(user);
 
             if (!string.IsNullOrEmpty(returnUrl))
-                {
+            {
                 return Redirect(returnUrl);
             }
             return RedirectToAction("Index");
@@ -175,12 +174,12 @@ namespace IdentityTest.Web.Controllers
 
             string errorMessage = "";
 
-            if (user.Password==null)
+            if (user.Password == null)
             {
                 errorMessage = "Password must be filled";
             }
 
-            if(user.ConfirmPassword == null)
+            if (user.ConfirmPassword == null)
             {
                 errorMessage = "You must confirm the password";
             }
@@ -204,7 +203,7 @@ namespace IdentityTest.Web.Controllers
             }
             return View();
         }
-    
+
         [HttpGet]
         public IActionResult AccessDenied()
         {

@@ -1,8 +1,5 @@
-﻿using IdentityTest.Models;
-using IdentityTest.Web.ViewModels;
+﻿using IdentityTest.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace IdentityTest.Web.Interfaces
 {
@@ -16,7 +13,7 @@ namespace IdentityTest.Web.Interfaces
         Task AddToRole(string idUser, string idRole);
         Task RemoveFromRole(string idUser, string idRole);
         Task<UserRoleViewModel> GetRoles(string id);
-        Task<ConfirmRemoveUserRole> GetToBeRemove(string idUser,string idRole);
+        Task<ConfirmRemoveUserRole> GetToBeRemove(string idUser, string idRole);
 
         Task<ConfirmRoleToDelete> RoleToBeDeleted(string Id);
     }

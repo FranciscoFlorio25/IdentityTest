@@ -2,8 +2,8 @@
 
 namespace IdentityTest.Web.Interfaces
 {
-	public interface IClaimRolesService
-	{
+    public interface IClaimRolesService
+    {
         Task AddClaim(string roleId, string claimType, string claimValue);
         Task DeleteClaim(string roleId, string claimValues);
 

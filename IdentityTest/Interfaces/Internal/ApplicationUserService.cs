@@ -1,18 +1,10 @@
 ﻿using IdentityTest.Models;
-using IdentityTest.Web.Interfaces;
-using IdetityTest.Web.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using IdentityTest.Web.Controllers;
-using System.Runtime.InteropServices;
+using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.ViewModels;
-using System.Security.AccessControl;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
-using NuGet.Protocol.Core.Types;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using Microsoft.VisualBasic;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace IdentityTest.Web
 {
@@ -46,7 +38,7 @@ namespace IdentityTest.Web
 
             var claims = await _userManager.GetClaimsAsync(user);
 
-            
+
             var FirstName = claims.FirstOrDefault(x => x.Type.Equals("FirstName"));
             if (FirstName == null)
             {
@@ -74,13 +66,13 @@ namespace IdentityTest.Web
             {
                 model.UserAddress = Address.Value;
             }
-           
+
             model.UserRoles = await _userManager.GetRolesAsync(user);
 
             return model;
         }
 
-        private IEnumerable<Claim> UserPersonalInfo(string firstName,string lastName, string address)
+        private IEnumerable<Claim> UserPersonalInfo(string firstName, string lastName, string address)
         {
             var claims = new List<Claim>();
 
@@ -109,7 +101,7 @@ namespace IdentityTest.Web
                 await _userManager.CreateAsync(newUser, user.Password);
                 await _userManager.AddClaimsAsync(newUser, claim);
             }
-           
+
         }
         public async Task<string> LoginUserAsync(string email, string password)
         {
@@ -170,10 +162,10 @@ namespace IdentityTest.Web
                 await _userManager.ReplaceClaimAsync(user, OldFirstName, FirstName);
             }
 
-            if(OldLastName == null)
+            if (OldLastName == null)
             {
                 Claim LastName = new("LastName", model.UserLastName);
-                await _userManager.AddClaimAsync(user,LastName);
+                await _userManager.AddClaimAsync(user, LastName);
             }
             else if (OldLastName.Value.Equals(model.UserLastName))
             {
@@ -181,18 +173,18 @@ namespace IdentityTest.Web
                 await _userManager.ReplaceClaimAsync(user, OldLastName, LastName);
             }
 
-            if (OldAddress==null)
+            if (OldAddress == null)
             {
                 Claim Address = new("Address", model.UserAddress);
                 await _userManager.AddClaimAsync(user, Address);
             }
-            else if(OldAddress.Value.Equals(model.UserAddress))
+            else if (OldAddress.Value.Equals(model.UserAddress))
             {
                 Claim Address = new("Address", model.UserAddress);
                 await _userManager.ReplaceClaimAsync(user, OldAddress, Address);
             }
 
-            
+
 
             await _userManager.UpdateAsync(user);
         }
@@ -201,7 +193,7 @@ namespace IdentityTest.Web
         {
             var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(id));
             await _userManager.RemovePasswordAsync(user);
-            await _userManager.AddPasswordAsync(user,password);
+            await _userManager.AddPasswordAsync(user, password);
         }
 
         public async Task<UserUpdateViewModel> getUserToUpdate(string Id)
@@ -223,7 +215,7 @@ namespace IdentityTest.Web
             var LastName = claims.FirstOrDefault(x => x.Type.Equals("LastName"));
             if (LastName == null)
             {
-                toUpdate.UserLastName =  "Add the LastName!";
+                toUpdate.UserLastName = "Add the LastName!";
             }
             else
             {
@@ -242,9 +234,9 @@ namespace IdentityTest.Web
 
             toUpdate.UserId = Id;
             toUpdate.UserEmail = user.Email;
-            
-            
-            
+
+
+
             toUpdate.UserPhoneNumber = user.PhoneNumber;
 
             return toUpdate;
@@ -253,7 +245,7 @@ namespace IdentityTest.Web
         public async Task<ChangePasswordViewModel> GetChangePassword(string Id)
         {
             var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(Id));
-            ChangePasswordViewModel newPassword =  new();
+            ChangePasswordViewModel newPassword = new();
             newPassword.Email = user.Email;
             newPassword.UserId = user.Id;
 
@@ -263,7 +255,7 @@ namespace IdentityTest.Web
         public async Task<ConfirmAccountDelete> ToBeDeleted(string id)
         {
             var user = await _userManager.Users.SingleAsync(x => x.Id.Equals(id));
-            
+
             ConfirmAccountDelete confirmAccountDelete = new();
 
             confirmAccountDelete.UserId = user.Id;

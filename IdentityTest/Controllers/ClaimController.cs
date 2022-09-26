@@ -1,10 +1,7 @@
-﻿using IdentityTest.Models;
-using IdentityTest.Web.Interfaces;
+﻿using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security;
-using System.Security.Claims;
 
 namespace IdentityTest.Web.Controllers
 {
@@ -59,14 +56,14 @@ namespace IdentityTest.Web.Controllers
         }
         [Route("/Claim/Delete/{userId}/{claimType}")]
         [HttpGet]
-        public async Task<IActionResult> Delete(string userId,string claimType)
+        public async Task<IActionResult> Delete(string userId, string claimType)
         {
-            
+
             return View(await _claimsService.GetToBeDeleted(userId, claimType));
         }
         [Route("/Claim/Delete/{userId}/{claimType}")]
         [HttpPost]
-        public async Task<IActionResult> Delete(string userId,string claimType,ClaimDeleteConfirmation model)
+        public async Task<IActionResult> Delete(string userId, string claimType, ClaimDeleteConfirmation model)
         {
             model.ClaimType = claimType;
 

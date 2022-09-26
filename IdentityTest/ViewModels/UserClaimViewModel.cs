@@ -1,10 +1,8 @@
-﻿using System.Security.Claims;
-
-namespace IdentityTest.Web.ViewModels
+﻿namespace IdentityTest.Web.ViewModels
 {
-	public class UserClaimViewModel
-	{
-		public string UserId { get; set; }
-		public IEnumerable<ClaimDTO>?  Claims { get; set; }
-	}
+    public class UserClaimViewModel
+    {
+        public string UserId { get; set; }
+        public IEnumerable<ClaimDTO>? Claims { get; set; }
+    }
 }

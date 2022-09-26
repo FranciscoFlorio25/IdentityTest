@@ -1,4 +1,4 @@
 ﻿namespace IdentityTest.Web.ViewModels
 {
-	public record RoleClaimDTO(string? ClaimSubject, string ClaimIssuer, string ClaimType, string ClaimValue);
+    public record RoleClaimDTO(string? ClaimSubject, string ClaimIssuer, string ClaimType, string ClaimValue);
 }

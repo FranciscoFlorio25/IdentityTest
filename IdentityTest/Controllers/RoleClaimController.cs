@@ -2,7 +2,6 @@
 using IdentityTest.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 
 namespace IdentityTest.Web.Controllers
 {

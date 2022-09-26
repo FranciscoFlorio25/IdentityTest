@@ -1,7 +1,7 @@
 ﻿namespace IdentityTest.Web.ViewModels
 {
-	public record UserRoleViewModel
-	{
+    public record UserRoleViewModel
+    {
 
         public string UserEmail { get; set; }
         public string UserId { get; set; }

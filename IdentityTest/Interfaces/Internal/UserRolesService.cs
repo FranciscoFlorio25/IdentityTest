@@ -1,9 +1,7 @@
 ﻿using IdentityTest.Models;
 using IdentityTest.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace IdentityTest.Web.Interfaces.Internal
 {
@@ -12,7 +10,7 @@ namespace IdentityTest.Web.Interfaces.Internal
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserRolesService(RoleManager<IdentityRole> roleManager,UserManager<ApplicationUser> userManager)
+        public UserRolesService(RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -28,12 +26,12 @@ namespace IdentityTest.Web.Interfaces.Internal
         {
             IdentityRole role = await _roleManager.Roles.
                 SingleAsync(x => x.Id.Equals(id));
-           
-            if(role != null)
+
+            if (role != null)
             {
                 await _roleManager.DeleteAsync(role);
             }
-           
+
         }
         public async Task<IdentityRole> Get(string id)
         {
@@ -77,7 +75,7 @@ namespace IdentityTest.Web.Interfaces.Internal
 
             foreach (var role in roles)
             {
-                 rolesDTO.Add(new RolesDTO(role.Id, role.Name));
+                rolesDTO.Add(new RolesDTO(role.Id, role.Name));
             }
 
             UserRoleViewModel userRolesDto = new();
@@ -114,7 +112,7 @@ namespace IdentityTest.Web.Interfaces.Internal
 
             if (isInRole)
             {
-                await _userManager.RemoveFromRoleAsync(user,role.Name);
+                await _userManager.RemoveFromRoleAsync(user, role.Name);
 
             }
         }
@@ -122,7 +120,7 @@ namespace IdentityTest.Web.Interfaces.Internal
         public async Task<ConfirmRemoveUserRole> GetToBeRemove(string idUser, string idRole)
         {
             var user = await GetUser(idUser);
-            var role =  await _roleManager.Roles.SingleAsync(x => x.Id.Equals(idRole));
+            var role = await _roleManager.Roles.SingleAsync(x => x.Id.Equals(idRole));
 
             ConfirmRemoveUserRole UserRoleToRemove = new();
             UserRoleToRemove.UserEmail = user.Email;

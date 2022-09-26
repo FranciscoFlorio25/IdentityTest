@@ -1,34 +1,33 @@
-﻿using IdentityTest.Models;
-using IdentityTest.Web.ViewModels;
+﻿using IdentityTest.Web.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace IdentityTest.Web.Interfaces.Internal
 {
-	public class RoleClaimService : IClaimRolesService
+    public class RoleClaimService : IClaimRolesService
     {
-		private readonly RoleManager<IdentityRole> _roleManager;
-		public RoleClaimService(RoleManager<IdentityRole> roleManager)
-		{
-			_roleManager = roleManager;
-		}
-		public async Task AddClaim(string roleId, string claimType, string claimValue)
-		{
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public RoleClaimService(RoleManager<IdentityRole> roleManager)
+        {
+            _roleManager = roleManager;
+        }
+        public async Task AddClaim(string roleId, string claimType, string claimValue)
+        {
             IdentityRole role = await _roleManager.Roles.SingleAsync(x => x.Id.Equals(roleId));
             Claim claim = new Claim(claimType, claimValue);
             await _roleManager.AddClaimAsync(role, claim);
         }
 
-		public async Task<CreateRoleClaimViewModel> CreateClaim(string roleId)
-		{
+        public async Task<CreateRoleClaimViewModel> CreateClaim(string roleId)
+        {
             var create = new CreateRoleClaimViewModel();
             create.RoleId = roleId;
             return create;
         }
 
-		public async Task DeleteClaim(string roleId, string claimType)
-		{
+        public async Task DeleteClaim(string roleId, string claimType)
+        {
             IdentityRole role = await _roleManager.Roles.SingleAsync(x => x.Id.Equals(roleId));
             var claims = await _roleManager.GetClaimsAsync(role);
 
@@ -37,7 +36,7 @@ namespace IdentityTest.Web.Interfaces.Internal
             await _roleManager.RemoveClaimAsync(role, claim);
         }
 
-		public async Task<RoleClaimDeleteConfirmation> GetToBeDeleted(string roleId, string claimType)
+        public async Task<RoleClaimDeleteConfirmation> GetToBeDeleted(string roleId, string claimType)
 
         {
             RoleClaimDeleteConfirmation ToBeRemove = new();
@@ -51,8 +50,8 @@ namespace IdentityTest.Web.Interfaces.Internal
             return ToBeRemove;
         }
 
-		public async Task<RoleClaimViewModel> GetRoleClaim(string roleId)
-		{
+        public async Task<RoleClaimViewModel> GetRoleClaim(string roleId)
+        {
             RoleClaimViewModel model = new();
 
             var role = await _roleManager.Roles.SingleAsync(x => x.Id.Equals(roleId));
