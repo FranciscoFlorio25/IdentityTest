@@ -26,5 +26,6 @@ namespace IdentityTest.Web.Interfaces
 
         Task<UserUpdateViewModel> getUserToUpdate(string Id);
         Task<ChangePasswordViewModel> GetChangePassword(string Id);
+
     }
 }

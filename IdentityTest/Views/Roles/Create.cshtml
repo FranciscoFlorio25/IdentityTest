@@ -6,9 +6,13 @@
 <h1 class="bg-info text-white">Create a Role</h1>
 <a asp-action="Index" class="btn btn-secondary">Back</a>
 
-<div class="alert alert-danger">
-    <p>@ViewBag.ErrorMessage</p>
-</div>
+@if (!string.IsNullOrEmpty(@ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger">
+        <p>@ViewBag.ErrorMessage</p>
+    </div>
+}
+
 
 <form asp-action="Create" method="post">
     <div class="form-group">

@@ -1,27 +1,24 @@
-﻿using IdentityTest.Models;
-using IdentityTest.Web.Interfaces;
+﻿using IdentityTest.Web.Interfaces;
 using IdentityTest.Web.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security;
-using System.Security.Claims;
+using System.Data;
 
 namespace IdentityTest.Web.Controllers
 {
     [Authorize(Roles = "Admin")]
-    public class ClaimController : Controller
+    public class RoleClaimController : Controller
     {
-        private readonly IClaimsService _claimsService;
+        private readonly IClaimRolesService _claimsService;
 
-        public ClaimController(IClaimsService claimsService)
+        public RoleClaimController(IClaimRolesService RoleclaimsService)
         {
-            _claimsService = claimsService;
+            _claimsService = RoleclaimsService;
         }
-
         [HttpGet]
         public async Task<IActionResult> Index(string Id)
         {
-            var user = await _claimsService.GetUserClaim(Id);
+            var user = await _claimsService.GetRoleClaim(Id);
             return View(user);
         }
 
@@ -55,18 +52,20 @@ namespace IdentityTest.Web.Controllers
                 return View(create);
             }
             await _claimsService.AddClaim(Id, model.ClaimType, model.ClaimValue);
-            return RedirectToAction("Index", "Account");
+            return RedirectToAction("Index", "Roles");
         }
-        [Route("/Claim/Delete/{userId}/{claimType}")]
+
+        [Route("/RoleClaim/RoleClaimDelete/{roleId}/{claimType}")]
         [HttpGet]
-        public async Task<IActionResult> Delete(string userId,string claimType)
+        public async Task<IActionResult> RoleClaimDelete(string roleId, string claimType)
         {
-            
-            return View(await _claimsService.GetToBeDeleted(userId, claimType));
+
+            return View(await _claimsService.GetToBeDeleted(roleId, claimType));
         }
-        [Route("/Claim/Delete/{userId}/{claimType}")]
+
+        [Route("/RoleClaim/RoleClaimDelete/{roleId}/{claimType}")]
         [HttpPost]
-        public async Task<IActionResult> Delete(string userId,string claimType,ClaimDeleteConfirmation model)
+        public async Task<IActionResult> RoleClaimDelete(string roleId, string claimType, RoleClaimDeleteConfirmation model)
         {
             model.ClaimType = claimType;
 
@@ -74,9 +73,8 @@ namespace IdentityTest.Web.Controllers
             {
                 return RedirectToAction("Index");
             }
-            await _claimsService.DeleteClaim(userId, model.ClaimType);
-            return RedirectToAction("Index", "Account");
+            await _claimsService.DeleteClaim(roleId, model.ClaimType);
+            return RedirectToAction("Index", "Roles");
         }
-
     }
 }

@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddScoped<IClaimRolesService, RoleClaimService>();
 builder.Services.AddScoped<IApplicationUserService,ApplicationUserService>();
 builder.Services.AddScoped<IUserRolesService,UserRolesService>();
 builder.Services.AddScoped<IClaimsService, ClaimsService>();

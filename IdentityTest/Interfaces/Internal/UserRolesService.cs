@@ -132,5 +132,16 @@ namespace IdentityTest.Web.Interfaces.Internal
 
             return UserRoleToRemove;
         }
+
+        public async Task<ConfirmRoleToDelete> RoleToBeDeleted(string Id)
+        {
+            var role = await _roleManager.Roles.SingleAsync(x => x.Id.Equals(Id));
+            ConfirmRoleToDelete getToDelete = new();
+            getToDelete.RoleId = role.Id;
+            getToDelete.RoleName = role.Name;
+
+
+            return getToDelete;
+        }
     }
 }

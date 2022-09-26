@@ -1,10 +1,10 @@
-﻿@model IdentityTest.Web.ViewModels.CreateClaimViewModel;
+﻿@model IdentityTest.Web.ViewModels.CreateRoleClaimViewModel;
 @{
-    ViewData["Title"] = "CREATE CLAIM";
+    ViewData["Title"] = "CREATE ROLE CLAIM";
 }
 
 <h1 class="bg-info text-white">Create Claim</h1>
-<a asp-action="Index" asp-route-id="@Model.UserId" class="btn btn-secondary">Back</a>
+<a asp-action="Index" asp-route-id="@Model.RoleId" class="btn btn-secondary">Back</a>
 
 @if (!string.IsNullOrEmpty(@ViewBag.ErrorMessage))
 {
@@ -16,8 +16,8 @@
 
 <form method="post">
     <div class="form-group">
-        <label  asp-for="ClaimType">Claim Type:</label>
-        <input  asp-for="ClaimType" name="ClaimType" class="form-control" />
+        <label asp-for="ClaimType">Claim Type:</label>
+        <input asp-for="ClaimType" name="ClaimType" class="form-control" />
     </div>
     <div class="form-group">
         <label asp-for="ClaimValue">Claim Value:</label>

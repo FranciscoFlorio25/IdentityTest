@@ -64,8 +64,14 @@ namespace IdentityTest.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> RoleDelete(string id)
+        {
+            return View(await _userRoles.RoleToBeDeleted(id));
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> RoleDelete(string id, ConfirmRoleToDelete model)
         {
             await _userRoles.DeleteRole(id);
             return RedirectToAction("Index");

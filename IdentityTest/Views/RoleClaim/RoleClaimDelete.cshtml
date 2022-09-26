@@ -1,0 +1,26 @@
+﻿@model IdentityTest.Web.ViewModels.RoleClaimDeleteConfirmation;
+<h1 class="bg-info text-white">Remove user role</h1>
+
+@{
+    ViewData["Title"] = "Confirm role claim to remove";
+}
+
+
+<h1 class="bg-info text-white">Confirm remove</h1>
+<a asp-action="Index" asp-route-id="@Model.RoleId" class="btn btn-secondary">Back</a>
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<form asp-action="RoleClaimDelete" asp-route-id="@Model.RoleId" method="post">
+
+    <div class="form-group">
+        <label asp-for="RoleName"> User Email</label>
+        <input asp-for="RoleName" class="form-control" disabled />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ClaimType"> Claim Type to be remove</label>
+        <input asp-for="ClaimType" class="form-control" disabled />
+    </div>
+
+    <button type="submit" class="btn btn-danger">Confirm Remove</button>
+</form>
